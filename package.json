@@ -14,12 +14,17 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "html2canvas": "^1.4.1",
+    "query-string": "^9.1.0",
     "svelte": "^4.2.18",
     "svelte-preprocess": "^6.0.2",
     "svelte-routing": "^2.13.0"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^3.1.1",
+    "@types/html2canvas": "^1.0.0",
+    "@types/node": "^22.1.0",
+    "@types/query-string": "^6.2.0",
     "typescript": "^5.5.4",
     "vite": "^5.3.5"
   }
