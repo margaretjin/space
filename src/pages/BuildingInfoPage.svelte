@@ -1,88 +1,105 @@
+<!--BulidingInfoPage.svelte -->
 <script lang="ts">
-    import { onMount } from 'svelte';
-    import { get } from 'svelte/store';
-    import { selectedAddress } from '../stores';
-    import type { BuildingInfoType, LandInfoItem, BuildingTitleItem } from '../types';
-    import BuildingExpos from '../components/BuildingExpos.svelte';
-    import BuildingFloor from '../components/BuildingFloor.svelte';
-    import LandInfo from '../components/LandInfo.svelte';
-  
-    let address = get(selectedAddress);
-  
-    let buildingInfo: BuildingInfoType | null = null;
-    let landInfo: LandInfoItem | null = null;
-    let isLoading = true;
-    let activeSection: string = 'total'; // 기본 값 설정
-    let exposInfo: any = null;
-    let activeFloor: string | null = null; // activeFloor 변수 추가
-    let activeExposSection: string = 'expos'; // 전유부 기본 값 설정
-  
-    async function fetchBuildingInfo(juso: string) {
-      try {
-        const response = await fetch('http://localhost:8000/get_building_main_info', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ juso }),
-        });
-        const data = await response.json();
-        buildingInfo = data;
-        if (data.grouped_expos_data) {
-          exposInfo = data.grouped_expos_data;
-        }
-      } catch (error) {
-        console.error('Error fetching building info:', error);
-      } finally {
-        isLoading = false;
+  import { onMount } from 'svelte';
+  import { get } from 'svelte/store';
+  import { selectedAddress } from '../stores'; // stores.ts에서 가져오기
+  import type { BuildingInfoType, LandInfoItem, BuildingTitleItem } from '../types';
+  import BuildingExpos from '../components/BuildingExpos.svelte';
+  import BuildingFloor from '../components/BuildingFloor.svelte';
+  import LandInfo from '../components/LandInfo.svelte';
+
+  let address = get(selectedAddress);
+  let buildingInfo: BuildingInfoType | null = null;
+  let landInfo: LandInfoItem | null = null;
+  let isLoading = true;
+  let activeSection: string = 'total'; // 기본 값 설정
+  let exposInfo: any = null;
+  let activeFloor: string | null = null; // activeFloor 변수 추가
+  let activeExposSection: string = 'expos'; // 전유부 기본 값 설정
+
+  async function fetchBuildingInfo(juso: string) {
+    try {
+      console.log('Fetching building info for:', juso);  // 로깅 추가
+      const response = await fetch('http://localhost:8000/get_building_main_info', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ juso }),
+      });
+      const data = await response.json();
+      buildingInfo = data;
+      if (data.grouped_expos_data) {
+        exposInfo = data.grouped_expos_data;
       }
+      console.log('Building info:', buildingInfo);  // 로깅 추가
+    } catch (error) {
+      console.error('Error fetching building info:', error);
+    } finally {
+      isLoading = false;
     }
-  
-    async function fetchLandInfo(juso: string) {
-      try {
-        const response = await fetch('http://localhost:8000/land_info', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ juso }),
-        });
-        const data = await response.json();
-        landInfo = data.land_info;
-      } catch (error) {
-        console.error('Error fetching land info:', error);
-      }
+  }
+
+  async function fetchLandInfo(juso: string) {
+    try {
+      const response = await fetch('http://localhost:8000/land_info', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ juso }),
+      });
+      const data = await response.json();
+      landInfo = data.land_info;
+      console.log('Land info:', landInfo);  // 로깅 추가
+    } catch (error) {
+      console.error('Error fetching land info:', error);
     }
-  
-    onMount(() => {
+  }
+
+  function updateAddress(newAddress: { juso: string, njuso: string, nameFull: string }) {
+    address = newAddress;
+    if (address.juso) {
+      isLoading = true;
       fetchBuildingInfo(address.juso);
       fetchLandInfo(address.juso);
-    });
-  
-    function showSection(section: string) {
-      activeSection = section;
     }
-  
-    function showExposSection(section: string) {
-      activeExposSection = section;
-    }
-  
-    function isArray(items: any): items is BuildingTitleItem[] {
-      return Array.isArray(items);
-    }
-  
-    function isSingleItem(item: any): item is BuildingTitleItem {
-      return item && typeof item === 'object' && !Array.isArray(item);
-    }
-  </script>
-  
-  <div class="info-container">
-    <ul>
+  }
+
+  onMount(() => {
+    updateAddress(get(selectedAddress));
+    const unsubscribe = selectedAddress.subscribe(updateAddress);
+    return () => {
+      unsubscribe();
+    };
+  });
+
+  function showSection(section: string) {
+    activeSection = section;
+  }
+
+  function showExposSection(section: string) {
+    activeExposSection = section;
+  }
+
+  function isArray(items: any): items is BuildingTitleItem[] {
+    return Array.isArray(items);
+  }
+
+  function isSingleItem(item: any): item is BuildingTitleItem {
+    return item && typeof item === 'object' && !Array.isArray(item);
+  }
+</script>
+
+{#if address.juso}
+<div class="container">
+  <div class="content">
+    <div>
       <li>주소: {address.juso}</li>
       <li>도로명 주소: {address.njuso}</li>
       <li>건물명: {address.nameFull}</li>
-    </ul>
-  
+    </div>
+
     {#if !isLoading && buildingInfo}
       <LandInfo {landInfo} />
       <div>
@@ -107,7 +124,7 @@
             {/if}
           {/if}
         </div>
-  
+
         <div class="info-content">
           {#if activeSection === 'total' && buildingInfo.total_info && buildingInfo.total_info.response.body.items.item}
             <div>
@@ -135,29 +152,52 @@
             {/if}
           {/if}
         </div>
-  
+        
         <BuildingExpos {exposInfo} {activeFloor} />
         <button class="button" on:click={() => showExposSection('floor')}>층별 정보</button>
         <BuildingFloor floorInfo={buildingInfo.floor_info} />
       </div>
     {/if}
-  </div>
-  
-  <style>
-    .info-container {
-      padding: 20px;
-    }
-  
-    .button-container {
-      margin-bottom: 10px;
-    }
-  
-    .button {
-      margin-right: 10px;
-    }
-  
-    .info-content {
-      margin-top: 20px;
-    }
-  </style>
-  
+</div>
+</div>
+{/if}
+
+<style>
+
+.button-container {
+    margin-bottom: 10px;
+}
+
+.button {
+    margin-right: 10px;
+    background-color: white;
+    color: white;
+    border-radius: 5px;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: #40392f;
+}
+
+.info-content {
+    margin-top: 20px;
+}
+
+h3 {
+    margin-bottom: 10px;
+    font-size: 1.2em;
+    color: #333;
+}
+
+h4 {
+    font-size: 1.1em;
+    margin-bottom: 8px;
+    color: #666;
+}
+
+
+</style>
+
+
