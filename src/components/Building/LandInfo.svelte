@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { LandInfoItem } from '../types';
+  import type { LandInfoItem } from '../../types';
 
   export let landInfo: LandInfoItem | null;
 </script>

@@ -1,25 +1,23 @@
-<!--BulidingInfoPage.svelte -->
 <script lang="ts">
   import { onMount } from 'svelte';
   import { get } from 'svelte/store';
-  import { selectedAddress } from '../stores'; // stores.ts에서 가져오기
-  import type { BuildingInfoType, LandInfoItem, BuildingTitleItem } from '../types';
-  import BuildingExpos from '../components/BuildingExpos.svelte';
-  import BuildingFloor from '../components/BuildingFloor.svelte';
-  import LandInfo from '../components/LandInfo.svelte';
+  import { selectedAddress } from '../stores';
+  import type { BuildingInfoType, LandInfoItem, BuildingExposInfo } from '../types';
+  import BuildingExpos from '../components/Building/BuildingExpos.svelte';
+  import BuildingFloor from '../components/Building/BuildingFloor.svelte';
+  import LandInfo from '../components/Building/LandInfo.svelte';
 
   let address = get(selectedAddress);
   let buildingInfo: BuildingInfoType | null = null;
   let landInfo: LandInfoItem | null = null;
-  let isLoading = true;
-  let activeSection: string = 'total'; // 기본 값 설정
-  let exposInfo: any = null;
-  let activeFloor: string | null = null; // activeFloor 변수 추가
-  let activeExposSection: string = 'expos'; // 전유부 기본 값 설정
+  let isLoading: boolean = true;
+  let activeSection: string = 'total';
+  let exposInfo: BuildingExposInfo | null = null;
+  let activeFloor: string | null = null;
 
   async function fetchBuildingInfo(juso: string) {
     try {
-      console.log('Fetching building info for:', juso);  // 로깅 추가
+      console.log('Fetching building info for:', juso);
       const response = await fetch('http://localhost:8000/get_building_main_info', {
         method: 'POST',
         headers: {
@@ -28,11 +26,11 @@
         body: JSON.stringify({ juso }),
       });
       const data = await response.json();
-      buildingInfo = data;
+      buildingInfo = data as BuildingInfoType; // Explicitly cast the type
       if (data.grouped_expos_data) {
-        exposInfo = data.grouped_expos_data;
+        exposInfo = data.grouped_expos_data as BuildingExposInfo;
       }
-      console.log('Building info:', buildingInfo);  // 로깅 추가
+      console.log('Building info:', buildingInfo);
     } catch (error) {
       console.error('Error fetching building info:', error);
     } finally {
@@ -51,13 +49,13 @@
       });
       const data = await response.json();
       landInfo = data.land_info;
-      console.log('Land info:', landInfo);  // 로깅 추가
+      console.log('Land info:', landInfo);
     } catch (error) {
       console.error('Error fetching land info:', error);
     }
   }
 
-  function updateAddress(newAddress: { juso: string, njuso: string, nameFull: string }) {
+  function updateAddress(newAddress: { juso: string; njuso: string; nameFull: string }) {
     address = newAddress;
     if (address.juso) {
       isLoading = true;
@@ -79,14 +77,14 @@
   }
 
   function showExposSection(section: string) {
-    activeExposSection = section;
+    activeSection = section;
   }
 
-  function isArray(items: any): items is BuildingTitleItem[] {
+  function isArray(items: any): items is any[] {
     return Array.isArray(items);
   }
 
-  function isSingleItem(item: any): item is BuildingTitleItem {
+  function isSingleItem(item: any): item is Record<string, any> {
     return item && typeof item === 'object' && !Array.isArray(item);
   }
 </script>
@@ -158,46 +156,41 @@
         <BuildingFloor floorInfo={buildingInfo.floor_info} />
       </div>
     {/if}
-</div>
+  </div>
 </div>
 {/if}
 
 <style>
-
-.button-container {
+  .button-container {
     margin-bottom: 10px;
-}
+  }
 
-.button {
+  .button {
     margin-right: 10px;
     background-color: white;
     color: white;
     border-radius: 5px;
     padding: 8px 12px;
     cursor: pointer;
-}
+  }
 
-.button:hover {
+  .button:hover {
     background-color: #40392f;
-}
+  }
 
-.info-content {
+  .info-content {
     margin-top: 20px;
-}
+  }
 
-h3 {
+  h3 {
     margin-bottom: 10px;
     font-size: 1.2em;
     color: #333;
-}
+  }
 
-h4 {
+  h4 {
     font-size: 1.1em;
     margin-bottom: 8px;
     color: #666;
-}
-
-
+  }
 </style>
-
-

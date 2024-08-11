@@ -275,7 +275,7 @@
     <div class="content">
         <h3> 중개 수수료 계산기 </h3>
         <div class="flex-G">
-            <input class="inline-box" type="text" bind:value={inputMessage} on:input={handleInput} on:keypress={handleKeyPress} placeholder="ex: 마이플레이스빌 1004호" />
+            <input type="text" bind:value={inputMessage} on:input={handleInput} on:keypress={handleKeyPress} placeholder="ex: 마이플레이스빌 1004호" />
         </div>
         <div class="flex-G10-M1">
             <div class="button-group">
@@ -353,50 +353,6 @@
         font-weight: 600;
     }
 
-    button {
-        height: 3.2em;
-        width: 6em;
-        padding: 0.5em;
-        border: none;
-        border-radius: 24px;
-        cursor: pointer;
-        background-color: #ffffff;
-        border: 1px solid #666;
-        color: #333;
-        font-size: 1em;
-        flex-grow: 1;
-    }
-
-    button.selected {
-        background-color: #ccddf0;
-        border: 2px solid #007bfe;
-    }
-
-    .button2 {
-        height: 2.5em;
-        text-align: center;
-        font-size: 18px;
-        cursor: pointer;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 14px;
-        width: 100%;
-    }
-
-    .button3 {
-        width: 50px;
-        max-width: 50px;
-        height: 50px;
-        padding: 0.5em;
-        border-radius: 50%;
-    }
-
-    .button-group {
-        padding-bottom: 1em;
-        width: 100%;
-    }
-
     .warning {
         color: red;
         border: 1px solid red;
@@ -443,4 +399,6 @@
         flex-direction: column;
         gap: 10px;
     }
+
+
 </style>

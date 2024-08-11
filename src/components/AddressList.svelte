@@ -42,11 +42,12 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
-
-  
     }
   
     .address-item {
+      padding: 1em;
+      height: 100%;
+      width: 100%;
       border: none;
       cursor: pointer;
       background: none;

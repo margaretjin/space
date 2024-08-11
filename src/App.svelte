@@ -104,11 +104,6 @@
     background-color: transparent;
     text-align: center;
     
-    
-  }
-
-  .top-login:hover {
-    font-size: 1.2em;
   }
 
   .bottom-tab-bar {
@@ -135,6 +130,8 @@
   .tab-button:hover {
     background-color: #ddd;
   }
+
+
 /* 작은 화면 크기부터 큰 화면 크기로 설정 순서를 정합니다. */
 @media (min-width: 375px) {
   main {
@@ -142,9 +139,16 @@
   }
 }
 
+@media (min-width: 450px) {
+  main {
+    max-width: 420px;
+    width: 50%;
+  }
+}
 @media (min-width: 900px) {
   main {
-    width: 36%;
+    max-width: 420px;
+    width: 40%;
   }
 }
 </style>

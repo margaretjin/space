@@ -1,9 +1,9 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  import type { ExposInfoItem } from '../types';
+  import type { ExposInfoItem, BuildingExposInfo } from '../../types';
 
-  export let exposInfo: Record<string, any>;
-  export let activeFloor: string | null;
+  export let exposInfo: BuildingExposInfo | null = null;
+  export let activeFloor: string | null = null;
 
   let activeDong: string | null = "";
   let activeHo: string | null = "";
@@ -67,6 +67,10 @@
   }
 
   function getAllExposItems(): ExposInfoItem[] {
+    if (!exposInfo) {
+      return [];
+    }
+
     return Object.values(exposInfo).flatMap((dong: any) =>
       Object.values(dong).flatMap((floor: any) =>
         Object.values(floor).flat()
