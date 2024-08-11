@@ -1,7 +1,7 @@
 <script lang="ts">
-    import CopyTextSection from '../components/CopyTextSection.svelte';
+    import CopyTextSection from '../components/Calculator/CopyTextSection.svelte';
     import html2canvas from 'html2canvas';
-    import CommissionTable from '../components/CommissionTable.svelte';
+    import CommissionTable from '../components/Calculator/CommissionTable.svelte';
 
     export let transactionType: string = '';
     export let transactionKind: string = '';

@@ -100,28 +100,32 @@ ${taxMessage}`;
     }
     
     .checkbox {
-      display: flex;
-      align-items: center;
-      border: solid 1px #0056b3;
-      border-radius: 8px;
-      padding: 10px 0 10px 0;
-      margin-top: 1em;
-    }
-  
-    .checkbox label {
-      padding-top: 4px;
-      margin-right: 4px;
-      margin-left: 6px;
-      font-size: 1em;
-      font-weight: bold;
-    }
-  
-    .checkbox input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
-      cursor: pointer;
-    }
-  
+    width: 100%;
+    display: flex;
+    flex-direction: row; /* 가로로 요소들을 정렬 */
+    align-items: center; /* 체크박스와 라벨을 수직 중앙 정렬 */
+    border: solid 1px #0056b3;
+    border-radius: 8px;
+    margin-top: 1em;
+    padding: 1em; /* padding 추가하여 여백 확보 */
+    box-sizing: border-box;
+}
+
+.checkbox label {
+    font-size: 1em;
+    font-weight: bold;
+    white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+}
+
+.checkbox input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    margin: 0px auto;
+    vertical-align: middle; /* 체크박스와 라벨의 텍스트를 동일한 수직 위치에 맞춤 */
+}
+
+
     .text-copy {
       width: 100%;
       font-size: 1.1em;
@@ -129,16 +133,5 @@ ${taxMessage}`;
       text-align: left;
     }
   
-    .button2 {
-      height: 2.5em;
-      text-align: center;
-      font-size: 18px;
-      cursor: pointer;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      width: 100%;
-    }
   </style>
   
